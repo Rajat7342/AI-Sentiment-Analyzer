@@ -5,6 +5,9 @@ An AI-powered web application that analyzes text and classifies its sentiment as
 The project combines **TF-IDF Vectorization** with **Logistic Regression** and provides an interactive **React dashboard** with real-time sentiment analysis, confidence scores, CSV bulk analysis, analytics, history, and AI-generated insights.
 
 ---
+## 🖥️ Project Preview
+
+![AI Sentiment Analyzer Dashboard](screenshots/dashboard.png)
 
 ## ✨ Features
 
