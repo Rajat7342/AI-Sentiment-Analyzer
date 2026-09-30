@@ -33,7 +33,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://ai-sentiment-analyzer-ko7j.onrender.com";
 
 const defaultSettings = {
   animations: true,
