@@ -7,52 +7,38 @@ import pandas as pd
 import io
 from pathlib import Path
 
-# ==========================================
-# CREATE FASTAPI APPLICATION
-# ==========================================
-
 app = FastAPI(
     title="AI Sentiment Analyzer API",
     description="AI-powered sentiment analysis for reviews and social media text",
     version="2.0.0"
 )
 
-# ==========================================
 # CORS CONFIGURATION
-# ==========================================
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://ai-sentiment-analyzer-1-wont.onrender.com",
+        "https://ai-sentiment-analyzer-omega-lake.vercel.app",
+        "https://ai-sentiment-analyzer-ip2t5ff29-rajat7342.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ==========================================
-# LOAD COMBINED MODEL
-# ==========================================
-
+# LOAD MODEL
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "sentiment_model_combined.pkl"
-
 model = joblib.load(MODEL_PATH)
 
-# ==========================================
-# REQUEST MODEL
-# ==========================================
 
 class TextRequest(BaseModel):
     text: str
 
-# ==========================================
-# SHARED PREDICTION FUNCTION
-# ==========================================
 
+# SHARED PREDICTION FUNCTION
 def analyze_text(text: str) -> dict:
     clean_text = text.strip()
 
@@ -77,10 +63,8 @@ def analyze_text(text: str) -> dict:
         "probabilities": probability_data,
     }
 
-# ==========================================
-# HOME API
-# ==========================================
 
+# HOME API
 @app.get("/")
 def home():
     return {
@@ -90,10 +74,8 @@ def home():
         "classes": [str(label) for label in model.classes_],
     }
 
-# ==========================================
-# SINGLE TEXT PREDICTION
-# ==========================================
 
+# SINGLE TEXT PREDICTION
 @app.post("/predict")
 def predict_sentiment(request: TextRequest):
     try:
@@ -101,13 +83,10 @@ def predict_sentiment(request: TextRequest):
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
 
-# ==========================================
-# CSV BULK SENTIMENT ANALYSIS
-# ==========================================
 
+# CSV BULK SENTIMENT ANALYSIS
 @app.post("/predict-csv")
 async def predict_csv(file: UploadFile = File(...)):
-
     if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(
             status_code=400,
@@ -131,7 +110,6 @@ async def predict_csv(file: UploadFile = File(...)):
                 detail="The uploaded CSV file has no data rows."
             )
 
-        # Match common text column names, ignoring case and spaces.
         possible_columns = {
             "text", "review", "comment", "message"
         }
